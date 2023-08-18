@@ -25,7 +25,7 @@ export async function generateMetadata({
   const $ = cheerio.load(data);
 
   const text = (id: string) => {
-    return $(`[data-testid=${id}]`).text();
+    return $(`[data-testid=${id}]`).first().text();
   };
 
   const dataAttr = (num: number) => {
@@ -36,6 +36,13 @@ export async function generateMetadata({
 
   const displayName = $(`[data-testid=User-Name] > :eq(0)`).first().text();
   const handle = $(`[data-testid=User-Name] > :eq(1)`).first().text();
+
+  const siteName = `twitter.lonelil.com · ${$("time")
+    .last()
+    .text()
+    .split(" · ")
+    .reverse()
+    .join(" - ")}`;
 
   const tweetPhotos = $('[data-testid="tweetPhoto"]');
   let imageLinks: string[] = [];
@@ -49,7 +56,7 @@ export async function generateMetadata({
     title: "",
     description: "",
     openGraph: {
-      siteName: "twitter.lonelil.com",
+      siteName,
       description: `${text("tweetText")}${
         $(`[data-testid=birdwatch-pivot]`).length > 0
           ? `\n\n👪 𝗖𝗼𝗺𝗺𝘂𝗻𝗶𝘁𝘆 𝗡𝗼𝘁𝗲𝘀\n\n${$(
@@ -79,7 +86,7 @@ export async function generateMetadata({
           `👀 ${dataAttr(0)} ♻️ ${dataAttr(1)} 💬 ${dataAttr(2)} 👍 ${dataAttr(
             3
           )} 🔖 ${dataAttr(4)}`
-        )}&author_url=https://twitter.com/${handle}&provider_name=twitter.lonelil.com&provider_url=https://lonelil.com`,
+        )}&author_url=https://twitter.com/${handle}&provider_name=${encodeURIComponent(siteName)}&provider_url=https://lonelil.com`,
       },
     },
   };
@@ -96,7 +103,10 @@ export default function Page({
   return (
     <>
       <Script id="redirect" strategy="beforeInteractive">
-        {`window.location.replace(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? \`twitter://status?id=${params.id}\` : \`https://twitter.com/${params.username}/status/${params.id}\`)`}
+        {`
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        window.location.replace(isMobile ? "twitter://status?id=${params.id}" : "https://twitter.com/${params.username}/status/${params.id}")
+        `}
       </Script>
     </>
   );
