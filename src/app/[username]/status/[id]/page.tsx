@@ -74,8 +74,7 @@ export async function generateMetadata({
     },
     alternates: {
       types: {
-        "application/json+oembed": `https://webembed-sb.onrender.com/oembed?a
-        uthor_name=${encodeURIComponent(
+        "application/json+oembed": `https://webembed-sb.onrender.com/oembed?author_name=${encodeURIComponent(
           `👀 ${dataAttr(0)} ♻️ ${dataAttr(1)} 💬 ${dataAttr(2)} 👍 ${dataAttr(
             3
           )} 🔖 ${dataAttr(4)}`
