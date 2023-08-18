@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import * as cheerio from "cheerio";
+import Script from "next/script";
 
 export async function generateMetadata({
   params,
@@ -84,6 +85,19 @@ export async function generateMetadata({
   };
 }
 
-export default function Page() {
-  return <></>;
+export default function Page({
+  params,
+}: {
+  params: {
+    username: string;
+    id: string;
+  };
+}) {
+  return (
+    <>
+      <Script id="redirect" strategy="beforeInteractive">
+        {`window.location.replace(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? \`twitter://status?id=${params.id}\` : \`https://twitter.com/${params.username}/status/${params.id}\`)`}
+      </Script>
+    </>
+  );
 }
