@@ -78,7 +78,7 @@ export async function generateMetadata({
 
   const description = `${data.text}${
     communityNotes
-      ? `\n\n👪 ${communityNotes.title}\n\n${communityNotes.subtitle}`
+      ? `\n\n👪 ${communityNotes.title}\n\n${communityNotes.subtitle.text}`
       : ""
   }`;
   const dataAttr = (num: number) => {
